@@ -1,10 +1,14 @@
 import React, { useState } from 'react'
-import { PiEyeClosedLight, piEyeLight } from "react-icons/pi";
+import { PiEyeClosedLight, PiEyeLight } from "react-icons/pi";
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 
 const Registration = () => {
+  const auth = getAuth();
+
   const [Email, setEmail] = useState('');
   const [FullName, setFullName] = useState('');
   const [Password, setPassword] = useState('');
+  const [Success, setSuccess] = useState('');
   // Errors
   const [EmailError, setEmailError] = useState('');
   const [FullNameError, setFullNameError] = useState('');
@@ -56,6 +60,26 @@ const Registration = () => {
         setPasswordError('Password must be eight characters or longer');
       }
     }
+    
+    if(Email && FullName && Password && (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(Email))){
+      
+      createUserWithEmailAndPassword(auth, Email, Password).then(()=>{
+          
+          sendEmailVerification(auth.currentUser)
+          .then(() => {
+            setSuccess('Verify your email');
+            setEmail('');
+            setFullName('');
+            setPassword('');
+          });
+
+        }).catch((error) => {
+          if(error.code.includes('auth/email-already-in-use')){
+            setEmailError('This Email is already used');
+            };
+        });
+
+    }
   }
 
   return (
@@ -70,27 +94,36 @@ const Registration = () => {
     <div>
     <h2 className='font-nunito font-bold text-3xl text-heading'>Get started with easily register</h2>
     <h3 className='font-nunito text-xl text-[#808080] mt-3'>Free register and you can enjoy it</h3>
-
+    
+    {
+      <h3 className='font-nunito text-xl text-white bg-green-500 mt-3 p-3.5 w-96 text-center'>{Success}</h3>
+    }
+    
+    {/* Email input field start */}
     <div className='relative mt-16'>
-      <input onChange={handleEmail} className=' w-96 px-14 py-6 rounded-lg border border-[#11175D]' type="email" placeholder='Enter Your Email'/>
+      <input onChange={handleEmail} value={Email} className=' w-96 px-14 py-6 rounded-lg border border-[#11175D]' type="email" placeholder='Enter Your Email'/>
       <p className='absolute top-[-12px] left-[50px] px-[6px] font-nunito font-semibold text-heading bg-white'>Email Address</p>
       {
         EmailError &&
         <p className='w-96 p-1 mt-2 font-nunito font-semibold text-white bg-red-500 rounded-lg'>{EmailError}</p>
       }
     </div>
+    {/* Email input field end */}
 
+      {/* FullName input field start */}
     <div className='relative mt-16'>
-      <input onChange={handleFullName} className=' w-96 px-14 py-6 rounded-lg border border-[#11175D]' type="text" placeholder='Enter Your Full Name'/>
+      <input onChange={handleFullName} value={FullName} className=' w-96 px-14 py-6 rounded-lg border border-[#11175D]' type="text" placeholder='Enter Your Full Name'/>
       <p className='absolute top-[-12px] left-[50px] px-[6px] font-nunito font-semibold text-heading bg-white'>Full Name</p>
       {
         FullNameError &&
         <p className='w-96 p-1 mt-2 font-nunito font-semibold text-white bg-red-500 rounded-lg'>{FullNameError}</p>
       }
     </div>
+      {/* FullName input field end */}
 
+{/* Password input field start */}
     <div className='relative mt-16'>
-      <input onChange={handlePassword} className=' w-96 px-14 py-6 rounded-lg border border-[#11175D]' type={PasswordShow ? 'text' : 'password'} placeholder='Enter Your Password'/>
+      <input onChange={handlePassword} value={Password} className=' w-96 px-14 py-6 rounded-lg border border-[#11175D]' type={PasswordShow ? 'text' : 'password'} placeholder='Enter Your Password'/>
       <p className='absolute top-[-12px] left-[50px] px-[6px] font-nunito font-semibold text-heading bg-white'>Password</p>
       {
         PasswordError &&
@@ -102,20 +135,25 @@ const Registration = () => {
        <PiEyeClosedLight onClick={()=> setPasswordShow(!PasswordShow)} className='absolute top-[30px] right-[70px]'/>
      }
     </div>
-    
+{/* Password input field end */}
+
+{/* Submit button start */}
     <div onClick={handleSubmit}>
       <button className='font-nunito font-semibold text-xl text-white bg-primary w-96 py-5 rounded-[86px] mt-16'>Sign up</button>
     </div>
+{/* Submit button end */}
+
 
     <p className='w-96 mb-28 text-center mt-5 font-openSans text-[13px] text-[#03014C]'>Already  have an account ? <span className='font-openSans text-bold text-[#EA6C00]'>Sign In</span></p>
     
     </div>
 </div>
 
-
+{/* Right side start */}
 <div className='w-2/4'>
     <img className='w-full h-screen object-cover' src="images/Registration.png" alt="image" />
 </div>
+{/* Right side end */}
 
 
 
