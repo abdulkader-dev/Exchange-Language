@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { PiEyeClosedLight, PiEyeLight } from "react-icons/pi";
 import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { ToastContainer, toast } from 'react-toastify';
 
 const Registration = () => {
   const auth = getAuth();
@@ -8,7 +9,7 @@ const Registration = () => {
   const [Email, setEmail] = useState('');
   const [FullName, setFullName] = useState('');
   const [Password, setPassword] = useState('');
-  const [Success, setSuccess] = useState('');
+  // const [Success, setSuccess] = useState('');
   // Errors
   const [EmailError, setEmailError] = useState('');
   const [FullNameError, setFullNameError] = useState('');
@@ -67,7 +68,7 @@ const Registration = () => {
           
           sendEmailVerification(auth.currentUser)
           .then(() => {
-            setSuccess('Verify your email');
+            toast.success('Verify your email');
             setEmail('');
             setFullName('');
             setPassword('');
@@ -95,9 +96,23 @@ const Registration = () => {
     <h2 className='font-nunito font-bold text-3xl text-heading'>Get started with easily register</h2>
     <h3 className='font-nunito text-xl text-[#808080] mt-3'>Free register and you can enjoy it</h3>
     
-    {
+    <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+    />
+
+    {/* {
+    Success &&
       <h3 className='font-nunito text-xl text-white bg-green-500 mt-3 p-3.5 w-96 text-center'>{Success}</h3>
-    }
+    } */}
     
     {/* Email input field start */}
     <div className='relative mt-16'>
