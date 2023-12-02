@@ -2,10 +2,12 @@ import React, { useState } from 'react'
 import { PiEyeClosedLight, PiEyeLight } from "react-icons/pi";
 import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { ToastContainer, toast } from 'react-toastify';
+import { Link, useNavigate } from 'react-router-dom';
+
 
 const Registration = () => {
   const auth = getAuth();
-
+  const navigate = useNavigate();
   const [Email, setEmail] = useState('');
   const [FullName, setFullName] = useState('');
   const [Password, setPassword] = useState('');
@@ -72,6 +74,9 @@ const Registration = () => {
             setEmail('');
             setFullName('');
             setPassword('');
+            setTimeout(() => {
+              navigate('/Login');
+            }, 6000);
           });
 
         }).catch((error) => {
@@ -159,7 +164,7 @@ const Registration = () => {
 {/* Submit button end */}
 
 
-    <p className='w-96 mb-28 text-center mt-5 font-openSans text-[13px] text-[#03014C]'>Already  have an account ? <span className='font-openSans text-bold text-[#EA6C00]'>Sign In</span></p>
+    <p className='w-96 mb-28 text-center mt-5 font-openSans text-[13px] text-[#03014C]'>Already  have an account ? <Link to='/login' className='font-openSans text-bold text-[#EA6C00]'>Sign In</Link></p>
     
     </div>
 </div>
